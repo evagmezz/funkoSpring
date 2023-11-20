@@ -22,10 +22,27 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springframework.boot:spring-boot-starter-web:3.1.0")
+    compileOnly("org.projectlombok:lombok:1.18.26")
+    annotationProcessor("org.projectlombok:lombok:1.18.26")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.1.0")
+    //cache spring
+    implementation("org.springframework.boot:spring-boot-starter-cache:3.1.0")
+    //validation
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.0.4")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.0.4")
+    implementation("com.h2database:h2:2.1.214")
+    //websocket
+    implementation("org.springframework.boot:spring-boot-starter-websocket:3.0.4")
+    //recibe en formato xml
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2")
+    //MongoDB
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb:3.0.7")
+    // Thyemeleaf
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.0.4")
+
+
 }
 
 tasks.withType<Test> {

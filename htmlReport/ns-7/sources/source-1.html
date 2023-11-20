@@ -1,0 +1,201 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > CategoriaServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dev.categoria.services</a>
+</div>
+
+<h1>Coverage Summary for Class: CategoriaServiceImpl (dev.categoria.services)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CategoriaServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (27/27)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CategoriaServiceImpl$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (27/27)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dev.categoria.services;
+&nbsp;
+&nbsp;import dev.categoria.dto.CategoriaDto;
+&nbsp;import dev.categoria.exceptions.CategoriaConflict;
+&nbsp;import dev.categoria.exceptions.CategoriaNotFound;
+&nbsp;import dev.categoria.mappers.CategoriaMapper;
+&nbsp;import dev.categoria.models.Categoria;
+&nbsp;import dev.categoria.repositories.CategoriaRepository;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.cache.annotation.CacheConfig;
+&nbsp;import org.springframework.cache.annotation.Cacheable;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@CacheConfig(cacheNames = {&quot;categorias&quot;})
+&nbsp;public class CategoriaServiceImpl implements CategoriaService {
+&nbsp;
+&nbsp;    private final CategoriaRepository categoriaRepository;
+&nbsp;    private final CategoriaMapper categoriaMapper;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public CategoriaServiceImpl(CategoriaRepository categoriaRepository, CategoriaMapper categoriaMapper) {</b>
+<b class="fc">&nbsp;        this.categoriaRepository = categoriaRepository;</b>
+<b class="fc">&nbsp;        this.categoriaMapper = categoriaMapper;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Categoria&gt; findAll(String nombre) {
+<b class="fc">&nbsp;        log.info(&quot;Buscando todas las categorias&quot;);</b>
+<b class="fc">&nbsp;        if (nombre == null || nombre.isEmpty()) {</b>
+<b class="fc">&nbsp;            return categoriaRepository.findAll();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        log.info(&quot;Buscando categoria por nombre: {}&quot;, nombre);</b>
+<b class="fc">&nbsp;        return categoriaRepository.findAllByNameContainingIgnoreCase(nombre).orElseThrow(() -&gt; new CategoriaNotFound(nombre));</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Cacheable
+&nbsp;    public Categoria findById(Long id) {
+<b class="fc">&nbsp;        log.info(&quot;Buscando categoria por id: {}&quot;, id);</b>
+<b class="fc">&nbsp;        return categoriaRepository.findById(id).orElseThrow(() -&gt; new CategoriaNotFound(id));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Cacheable
+&nbsp;    public Categoria save(CategoriaDto categoriaDto) {
+<b class="fc">&nbsp;        log.info(&quot;Creando categoria: {}&quot;, categoriaDto);</b>
+<b class="fc">&nbsp;        Optional&lt;Long&gt; id = categoriaRepository.getIdByName(categoriaDto.nombre());</b>
+<b class="fc">&nbsp;        if (id.isPresent()) {</b>
+<b class="fc">&nbsp;            throw new CategoriaConflict(&quot;Ya existe una categoría con el nombre &quot; + categoriaDto.nombre());</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            Categoria categoria = categoriaMapper.toCategoria(categoriaDto);</b>
+<b class="fc">&nbsp;            return categoriaRepository.save(categoria);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Cacheable
+&nbsp;    public Categoria update(Long id, CategoriaDto categoriaDto) {
+<b class="fc">&nbsp;        log.info(&quot;Actualizando categoría: &quot; + categoriaDto);</b>
+<b class="fc">&nbsp;        Categoria categoriaActual = findById(id);</b>
+<b class="fc">&nbsp;        Categoria categoriaUpdated = categoriaMapper.toCategoria(categoriaDto, categoriaActual);</b>
+<b class="fc">&nbsp;        return categoriaRepository.save(categoriaUpdated);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Cacheable
+&nbsp;    @Transactional
+&nbsp;    public void deleteById(Long id) {
+<b class="fc">&nbsp;        log.info(&quot;Borrando categoría con id: &quot; + id);</b>
+<b class="fc">&nbsp;        Categoria categoria = findById(id);</b>
+<b class="fc">&nbsp;        categoriaRepository.updateIsActiveToFalseById(id);</b>
+<b class="fc">&nbsp;        if (categoriaRepository.existsFunkoById(id)) {</b>
+<b class="fc">&nbsp;            throw new CategoriaConflict(&quot;La categoría &quot; + categoria.getName() + &quot; tiene funkos asociados&quot;);</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            categoriaRepository.deleteById(id);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-09 19:36</div>
+</div>
+</body>
+</html>

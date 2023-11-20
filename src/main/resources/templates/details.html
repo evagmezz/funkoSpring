@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalles del Funko</title>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{header.html :: header}"></div>
+
+    <h1>Detalles del Funko</h1>
+    <dl class="row">
+        <dt class="col-sm-2">ID:</dt>
+        <dd class="col-sm-10" th:text="${funko.id}"></dd>
+        <dt class="col-sm-2">Precio:</dt>
+        <dd class="col-sm-10" th:text="${funko.precio}"></dd>
+        <dt class="col-sm-2">Imagen:</dt>
+        <dd class="col-sm-10"><img alt="Funko Image" class="img-fluid" th:src="${funko.rutaImagen}"></dd>
+        <dt class="col-sm-2">Stock:</dt>
+        <dd class="col-sm-10" th:text="${funko.cantidad}"></dd>
+        <dt class="col-sm-2">Categoría:</dt>
+        <dd class="col-sm-10" th:text="${funko.categoria}"></dd>
+    </dl>
+    <a class="btn btn-primary" href="/funkos">Volver</a>
+</div>
+
+<div th:replace="~{footer.html :: footer}"></div>
+
+
+</body>
+</html>

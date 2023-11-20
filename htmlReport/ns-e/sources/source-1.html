@@ -1,0 +1,207 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > Funko</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dev.funkos.models</a>
+</div>
+
+<h1>Coverage Summary for Class: Funko (dev.funkos.models)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Funko</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Funko$FunkoBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Funko$HibernateInstantiator$1jCMjdti</td>
+  </tr>
+  <tr>
+    <td class="name">Funko$HibernateInstantiator$hvlrDVqR</td>
+  </tr>
+  <tr>
+    <td class="name">Funko$HibernateInstantiator$J3qJu94A</td>
+  </tr>
+  <tr>
+    <td class="name">Funko$HibernateInstantiator$MNdlWMgp</td>
+  </tr>
+  <tr>
+    <td class="name">Funko$HibernateProxy$9539HhXL</td>
+  </tr>
+  <tr>
+    <td class="name">Funko$HibernateProxy$BNoKblEd</td>
+  </tr>
+  <tr>
+    <td class="name">Funko$HibernateProxy$MhrXyILK</td>
+  </tr>
+  <tr>
+    <td class="name">Funko$HibernateProxy$nUIQEdKr</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/14)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dev.funkos.models;
+&nbsp;
+&nbsp;import dev.categoria.models.Categoria;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import jakarta.validation.constraints.Min;
+&nbsp;import jakarta.validation.constraints.NotBlank;
+&nbsp;import jakarta.validation.constraints.NotNull;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Builder;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;
+<b class="fc">&nbsp;@Builder</b>
+&nbsp;@Entity
+&nbsp;@EntityListeners(AuditingEntityListener.class)
+<b class="fc">&nbsp;@Data</b>
+&nbsp;@Table(name = &quot;funkos&quot;)
+<b class="fc">&nbsp;@AllArgsConstructor</b>
+<b class="fc">&nbsp;@NoArgsConstructor(force = true)</b>
+&nbsp;public class Funko {
+&nbsp;
+&nbsp;    public static final String RUTA_IMAGEN = &quot;/storage/&quot;;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+<b class="fc">&nbsp;    private Long id;</b>
+&nbsp;    @Column
+&nbsp;    @NotBlank(message = &quot;El nombre no puede estar vacio&quot;)
+<b class="fc">&nbsp;    private String nombre;</b>
+&nbsp;    @Column
+&nbsp;    @Min(value = 0, message = &quot;El precio debe ser mayor a 0&quot;)
+<b class="fc">&nbsp;    private Double precio;</b>
+&nbsp;    @Column
+&nbsp;    @Min(value = 0, message = &quot;La cantidad debe ser mayor a 0&quot;)
+<b class="fc">&nbsp;    private Integer cantidad;</b>
+<b class="fc">&nbsp;    @Column(name = &quot;ruta_imagen&quot;)</b>
+&nbsp;    @NotBlank(message = &quot;La ruta de la imagen no puede estar vacia&quot;)
+<b class="fc">&nbsp;    private String rutaImagen = RUTA_IMAGEN;</b>
+&nbsp;    @Column(name = &quot;fecha_creacion&quot;)
+&nbsp;    @Builder.Default
+<b class="fc">&nbsp;    private LocalDate fechaCreacion = LocalDate.now();</b>
+&nbsp;    @Column(name = &quot;fecha_actualizacion&quot;)
+&nbsp;    @Builder.Default
+<b class="fc">&nbsp;    private LocalDate fechaActualizacion = LocalDate.now();</b>
+&nbsp;
+&nbsp;    @ManyToOne()
+&nbsp;    @JoinColumn(name = &quot;categoria_id&quot;)
+&nbsp;    @NotNull
+<b class="fc">&nbsp;    private Categoria categoria;</b>
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-09 19:36</div>
+</div>
+</body>
+</html>

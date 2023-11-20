@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Actualizar Funko</title>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <div th:replace="~{header.html :: header}"></div>
+
+    <h1>Actualizar Funko</h1>
+
+    <form action="@{/funkos/update/{id}(id=${id})}" method="post"
+          th:action="@{/funkos/update/{id}(id=${id})}"
+          th:object="${funko}">
+        <div class="form-group">
+            <label th:text="${id}">id</label>
+        </div>
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input class="form-control" id="nombre" name="nombre" th:field="*{nombre}"
+                   type="text">
+            <small class="text-danger" th:errors="*{nombre}" th:if="${#fields.hasErrors('nombre')}"></small>
+        </div>
+        <div class="form-group">
+            <label for="precio">Precio:</label>
+            <input class="form-control" id="precio" min="0.0" name="precio" step="0.01" th:field="*{precio}"
+                   type="number">
+            <small class="text-danger" th:errors="*{precio}" th:if="${#fields.hasErrors('precio')}"></small>
+        </div>
+        <div class="form-group">
+            <label for="rutaImagen">Imagen:</label>
+            <input class="form-control" id="rutaImagen" name="rutaImagen" readonly th:field="*{rutaImagen}" type="text">
+        </div>
+        <div class="form-group">
+            <label for="cantidad">Stock:</label>
+            <input class="form-control" id="cantidad" min="0" name="cantidad" th:field="*{cantidad}" type="number">
+            <small class="text-danger" th:errors="*{cantidad}" th:if="${#fields.hasErrors('cantidad')}"></small>
+        </div>
+        <div class="form-group">
+            <label for="categoria">Categoría:</label>
+            <select class="form-control" id="categoria" name="categoria" th:field="*{categoria}">
+                <option value="">Seleccione una categoría</option>
+                <option th:each="cat : ${categorias}" th:selected="${cat == categoria}" th:text="${cat}"
+                        th:value="${cat}"></option>
+            </select>
+            <small class="text-danger" th:errors="*{categoria}" th:if="${#fields.hasErrors('categoria')}"></small>
+        </div>
+        <button class="btn btn-primary" type="submit">Actualizar</button>
+        <a class="btn btn-secondary mx-2" href="/funkos">Volver</a>
+    </form>
+</div>
+
+<div th:replace="~{footer.html :: footer}"></div>
+
+</body>
+</html>

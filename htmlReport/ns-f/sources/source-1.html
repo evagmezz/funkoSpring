@@ -1,0 +1,279 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > FunkoServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dev.funkos.services</a>
+</div>
+
+<h1>Coverage Summary for Class: FunkoServiceImpl (dev.funkos.services)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FunkoServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    83,3%
+  </span>
+  <span class="absValue">
+    (10/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    65,6%
+  </span>
+  <span class="absValue">
+    (42/64)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FunkoServiceImpl$$SpringCGLIB$$0</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    83,3%
+  </span>
+  <span class="absValue">
+    (10/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    65,6%
+  </span>
+  <span class="absValue">
+    (42/64)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dev.funkos.services;
+&nbsp;
+&nbsp;import com.fasterxml.jackson.core.JsonProcessingException;
+&nbsp;import com.fasterxml.jackson.databind.ObjectMapper;
+&nbsp;import dev.config.websocket.WebSocketConfig;
+&nbsp;import dev.config.websocket.WebSocketHandler;
+&nbsp;import dev.funkos.dto.FunkoCreateDto;
+&nbsp;import dev.funkos.dto.FunkoResponseDto;
+&nbsp;import dev.funkos.dto.FunkoUpdateDto;
+&nbsp;import dev.funkos.exceptions.FunkoNotFound;
+&nbsp;import dev.funkos.mappers.FunkoMapper;
+&nbsp;import dev.funkos.models.Funko;
+&nbsp;import dev.funkos.repositories.FunkoRepository;
+&nbsp;import dev.storage.services.StorageService;
+&nbsp;import dev.websockets.notifications.dto.FunkoNotificationDto;
+&nbsp;import dev.websockets.notifications.mapper.FunkoNotificationMapper;
+&nbsp;import dev.websockets.notifications.models.Notification;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.cache.annotation.CacheConfig;
+&nbsp;import org.springframework.cache.annotation.CacheEvict;
+&nbsp;import org.springframework.cache.annotation.CachePut;
+&nbsp;import org.springframework.cache.annotation.Cacheable;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;import org.springframework.transaction.annotation.Transactional;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.util.List;
+&nbsp;
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@Service
+&nbsp;@CacheConfig(cacheNames = {&quot;funkos&quot;})
+&nbsp;public class FunkoServiceImpl implements FunkoService {
+&nbsp;    private final FunkoRepository funkoRepository;
+&nbsp;    private final FunkoMapper funkoMapper;
+&nbsp;    private final StorageService storageService;
+&nbsp;    private final WebSocketConfig webSocketConfig;
+&nbsp;    private final FunkoNotificationMapper funkoNotificationMapper;
+&nbsp;    private WebSocketHandler webSocketService;
+&nbsp;    private final ObjectMapper mapper;
+&nbsp;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public FunkoServiceImpl(FunkoRepository funkoRepository, FunkoMapper funkoMapper, StorageService storageService, WebSocketConfig webSocketConfig, FunkoNotificationMapper funkoNotificationMapper, ObjectMapper mapper) {</b>
+<b class="fc">&nbsp;        this.funkoRepository = funkoRepository;</b>
+<b class="fc">&nbsp;        this.funkoMapper = funkoMapper;</b>
+<b class="fc">&nbsp;        this.storageService = storageService;</b>
+<b class="fc">&nbsp;        this.webSocketConfig = webSocketConfig;</b>
+<b class="fc">&nbsp;        this.funkoNotificationMapper = funkoNotificationMapper;</b>
+<b class="fc">&nbsp;        webSocketService = webSocketConfig.webSocketFunkosHandler();</b>
+<b class="fc">&nbsp;        this.mapper = new ObjectMapper();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;Funko&gt; findAll(String categoria, String nombre) {
+<b class="fc">&nbsp;        if ((nombre == null || nombre.isEmpty()) &amp;&amp; (categoria == null || categoria.isEmpty())) {</b>
+<b class="fc">&nbsp;            return funkoRepository.findAll();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if ((nombre != null &amp;&amp; !nombre.isEmpty()) &amp;&amp; (categoria == null || categoria.isEmpty())) {</b>
+<b class="fc">&nbsp;            return funkoRepository.getByNombreContainingIgnoreCase(nombre);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (nombre == null || nombre.isEmpty()) {</b>
+<b class="fc">&nbsp;            return funkoRepository.getByCategoriaNameContainingIgnoreCase(categoria);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return funkoRepository.getByNombreAndCategoriaNameContainingIgnoreCase(nombre, categoria);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @Cacheable
+&nbsp;    public Funko findById(Long id) {
+<b class="fc">&nbsp;        return funkoRepository.findById(id).orElseThrow(</b>
+<b class="fc">&nbsp;                () -&gt; new FunkoNotFound(id)</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @CachePut(key = &quot;#result.id&quot;)
+&nbsp;    public Funko save(FunkoCreateDto funkoCreateDto) {
+<b class="fc">&nbsp;        sendNotification(Notification.Tipo.CREATE, funkoMapper.toFunko(funkoCreateDto));</b>
+<b class="fc">&nbsp;        return funkoRepository.save(funkoMapper.toFunko(funkoCreateDto));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @CachePut(key = &quot;#id&quot;)
+&nbsp;    public Funko update(FunkoUpdateDto funkoUpdateDto, Long id) {
+<b class="fc">&nbsp;        Funko funkoActual = this.findById(id);</b>
+<b class="fc">&nbsp;        sendNotification(Notification.Tipo.UPDATE, funkoActual);</b>
+<b class="fc">&nbsp;        return funkoRepository.save(funkoMapper.toFunko(funkoUpdateDto, funkoActual));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @CacheEvict(key = &quot;#id&quot;)
+&nbsp;    public void deleteById(Long id) {
+<b class="fc">&nbsp;        Funko funko = funkoRepository.findById(id).orElseThrow(() -&gt; new FunkoNotFound(id));</b>
+<b class="fc">&nbsp;        funkoRepository.deleteById(id);</b>
+<b class="fc">&nbsp;        if (funko.getRutaImagen() != null &amp;&amp; !funko.getRutaImagen().equals(Funko.RUTA_IMAGEN)) {</b>
+<b class="fc">&nbsp;            storageService.delete(funko.getRutaImagen());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        sendNotification(Notification.Tipo.DELETE, funko);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    @CachePut(key = &quot;#result.id&quot;)
+&nbsp;    @Transactional
+&nbsp;    public FunkoResponseDto updateImage(Long id, MultipartFile image, Boolean withUrl) {
+<b class="nc">&nbsp;        Funko funkoActual = funkoRepository.findById(id).orElseThrow(() -&gt; new FunkoNotFound(id));</b>
+<b class="nc">&nbsp;        if (funkoActual.getRutaImagen() != null &amp;&amp; !funkoActual.getRutaImagen().equals(Funko.RUTA_IMAGEN)) {</b>
+<b class="nc">&nbsp;            storageService.delete(funkoActual.getRutaImagen());</b>
+&nbsp;        }
+<b class="nc">&nbsp;        String imageStored = storageService.store(image);</b>
+<b class="nc">&nbsp;        String imageUrl = !withUrl ? imageStored : storageService.getURL(imageStored);</b>
+&nbsp;
+<b class="nc">&nbsp;        Funko funkoActualizado = Funko.builder()</b>
+<b class="nc">&nbsp;                .id(funkoActual.getId())</b>
+<b class="nc">&nbsp;                .nombre(funkoActual.getNombre())</b>
+<b class="nc">&nbsp;                .precio(funkoActual.getPrecio())</b>
+<b class="nc">&nbsp;                .cantidad(funkoActual.getCantidad())</b>
+<b class="nc">&nbsp;                .rutaImagen(imageUrl)</b>
+<b class="nc">&nbsp;                .fechaCreacion(funkoActual.getFechaCreacion())</b>
+<b class="nc">&nbsp;                .fechaActualizacion(funkoActual.getFechaActualizacion())</b>
+<b class="nc">&nbsp;                .categoria(funkoActual.getCategoria())</b>
+<b class="nc">&nbsp;                .build();</b>
+&nbsp;
+<b class="nc">&nbsp;        Funko funkoUpdate = funkoRepository.save(funkoActualizado);</b>
+<b class="nc">&nbsp;        sendNotification(Notification.Tipo.UPDATE, funkoUpdate);</b>
+<b class="nc">&nbsp;        return funkoMapper.toFunkoDto(funkoUpdate);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    void sendNotification(Notification.Tipo tipo, Funko data) {
+<b class="fc">&nbsp;        if (webSocketService == null) {</b>
+<b class="fc">&nbsp;            log.warn(&quot;No se ha configurado el servicio de websockets&quot;);</b>
+<b class="fc">&nbsp;            webSocketService = this.webSocketConfig.webSocketFunkosHandler();</b>
+&nbsp;        }
+&nbsp;        try {
+<b class="fc">&nbsp;            Notification&lt;FunkoNotificationDto&gt; notificacion = new Notification&lt;&gt;(</b>
+&nbsp;                    &quot;FUNKOS&quot;,
+&nbsp;                    tipo,
+<b class="fc">&nbsp;                    funkoNotificationMapper.toFunkoNotificationDto(data),</b>
+<b class="fc">&nbsp;                    LocalDateTime.now().toString()</b>
+&nbsp;            );
+&nbsp;
+<b class="fc">&nbsp;            String json = mapper.writeValueAsString((notificacion));</b>
+<b class="fc">&nbsp;            log.info(&quot;Enviando notificación mensaje..&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;            Thread senderThread = new Thread(() -&gt; {</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    webSocketService.sendMessage(json);</b>
+<b class="fc">&nbsp;                } catch (Exception e) {</b>
+<b class="fc">&nbsp;                    log.error(&quot;Error al enviar el mensaje a través del servicio WebSocket&quot;, e);</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            });
+<b class="fc">&nbsp;            senderThread.start();</b>
+<b class="nc">&nbsp;        } catch (JsonProcessingException e) {</b>
+<b class="nc">&nbsp;            log.error(&quot;Error al convertir la notificación a JSON&quot;, e);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setWebSocketService(WebSocketHandler webSocketHandlerMock) {
+<b class="nc">&nbsp;        this.webSocketService = webSocketHandlerMock;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-09 19:36</div>
+</div>
+</body>
+</html>

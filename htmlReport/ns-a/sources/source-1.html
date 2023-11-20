@@ -1,0 +1,208 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > FunkoController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dev.funkos.controllers</a>
+</div>
+
+<h1>Coverage Summary for Class: FunkoController (dev.funkos.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FunkoController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90,9%
+  </span>
+  <span class="absValue">
+    (10/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84,6%
+  </span>
+  <span class="absValue">
+    (22/26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dev.funkos.controllers;
+&nbsp;
+&nbsp;import dev.funkos.dto.FunkoCreateDto;
+&nbsp;import dev.funkos.dto.FunkoResponseDto;
+&nbsp;import dev.funkos.dto.FunkoUpdateDto;
+&nbsp;import dev.funkos.models.Funko;
+&nbsp;import dev.funkos.services.FunkoServiceImpl;
+&nbsp;import dev.storage.services.StorageService;
+&nbsp;import jakarta.validation.Valid;
+&nbsp;import lombok.NonNull;
+&nbsp;import lombok.extern.slf4j.Slf4j;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.MediaType;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.validation.FieldError;
+&nbsp;import org.springframework.web.bind.MethodArgumentNotValidException;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;import org.springframework.web.server.ResponseStatusException;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;
+<b class="fc">&nbsp;@Slf4j</b>
+&nbsp;@RequestMapping(&quot;/api/funkos&quot;)
+&nbsp;@RestController
+&nbsp;public class FunkoController {
+&nbsp;
+&nbsp;    private final FunkoServiceImpl funkoService;
+&nbsp;    private final StorageService storageService;
+&nbsp;
+&nbsp;    @Autowired
+<b class="fc">&nbsp;    public FunkoController(FunkoServiceImpl funkoService, StorageService storageService) {</b>
+<b class="fc">&nbsp;        this.funkoService = funkoService;</b>
+<b class="fc">&nbsp;        this.storageService = storageService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    public Funko getFunkoById(@PathVariable Long id) {
+<b class="fc">&nbsp;        log.info(&quot;Buscando funko con ID: &quot; + id);</b>
+<b class="fc">&nbsp;        return funkoService.findById(id);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping()
+&nbsp;    public ResponseEntity&lt;List&lt;Funko&gt;&gt; getFunkos(@RequestParam(required = false) String categoria, @RequestParam(required = false) String nombre) {
+<b class="fc">&nbsp;        log.info(&quot;Buscando funkos...&quot;);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(funkoService.findAll(categoria, nombre));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @NonNull
+&nbsp;    @PostMapping()
+&nbsp;    public ResponseEntity&lt;Funko&gt; createFunko(@Valid @RequestBody FunkoCreateDto funko) {
+<b class="fc">&nbsp;        log.info(&quot;Creando funko...&quot;);</b>
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.CREATED).body(funkoService.save(funko));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @NonNull
+&nbsp;    @PutMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Funko&gt; updateFunko(@PathVariable Long id, @Valid @RequestBody FunkoUpdateDto funko) {
+<b class="fc">&nbsp;        log.info(&quot;Actualizando funko con ID: &quot; + id);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(funkoService.update(funko, id));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @NonNull
+&nbsp;    @PatchMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Funko&gt; funkoPatch(@PathVariable Long id, @Valid @RequestBody FunkoUpdateDto funko) {
+<b class="fc">&nbsp;        log.info(&quot;Actualizando funko con ID: &quot; + id);</b>
+<b class="fc">&nbsp;        return ResponseEntity.ok(funkoService.update(funko, id));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/{id}&quot;)
+&nbsp;    public ResponseEntity&lt;Void&gt; deleteFunko(@PathVariable Long id) {
+<b class="fc">&nbsp;        funkoService.deleteById(id);</b>
+<b class="fc">&nbsp;        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @ResponseStatus(HttpStatus.BAD_REQUEST)
+&nbsp;    @ExceptionHandler(MethodArgumentNotValidException.class)
+&nbsp;    public Map&lt;String, String&gt; handleValidationExceptions(
+&nbsp;            MethodArgumentNotValidException ex) {
+<b class="fc">&nbsp;        Map&lt;String, String&gt; errors = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;        ex.getBindingResult().getAllErrors().forEach(error -&gt; {</b>
+<b class="fc">&nbsp;            String fieldName = ((FieldError) error).getField();</b>
+<b class="fc">&nbsp;            String errorMessage = error.getDefaultMessage();</b>
+<b class="fc">&nbsp;            errors.put(fieldName, errorMessage);</b>
+&nbsp;        });
+<b class="fc">&nbsp;        return errors;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PatchMapping(value = &quot;/image/{id}&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+&nbsp;    public ResponseEntity&lt;FunkoResponseDto&gt; uploadImage(@PathVariable Long id, @RequestPart(&quot;file&quot;) MultipartFile
+&nbsp;            file) {
+<b class="nc">&nbsp;        log.info(&quot;Actualizando imagen de funko con id: &quot; + id);</b>
+<b class="nc">&nbsp;        if (!file.isEmpty()) {</b>
+<b class="nc">&nbsp;            return ResponseEntity.ok(funkoService.updateImage(id, file, true));</b>
+&nbsp;
+&nbsp;        } else {
+<b class="nc">&nbsp;            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, &quot;No se ha enviado una imagen para el funko o esta está vacía&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-09 19:36</div>
+</div>
+</body>
+</html>

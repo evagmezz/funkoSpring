@@ -1,0 +1,105 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > CategoriaRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dev.categoria.repositories</a>
+</div>
+
+<h1>Coverage Summary for Class: CategoriaRepository (dev.categoria.repositories)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">CategoriaRepository$MockitoMock$ryPgA0iE</td>
+  </tr>
+  <tr>
+    <td class="name">CategoriaRepository$MockitoMock$ryPgA0iE$auxiliary$mdoOgIhN</td>
+  </tr>
+  <tr>
+    <td class="name">CategoriaRepository$MockitoMock$ryPgA0iE$auxiliary$V2u9Fsdr</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dev.categoria.repositories;
+&nbsp;
+&nbsp;import dev.categoria.models.Categoria;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;import org.springframework.data.jpa.repository.Modifying;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.stereotype.Repository;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Optional;
+&nbsp;
+&nbsp;@Repository
+&nbsp;public interface CategoriaRepository extends JpaRepository&lt;Categoria, Long&gt; {
+&nbsp;
+&nbsp;    Optional&lt;List&lt;Categoria&gt;&gt; findAllByNameContainingIgnoreCase(String nombre);
+&nbsp;
+&nbsp;    List&lt;Categoria&gt; findByIsActive(boolean isActive);
+&nbsp;
+&nbsp;    @Modifying
+&nbsp;    @Query(&quot;UPDATE Categoria p SET p.isActive = false WHERE p.id = :id&quot;)
+&nbsp;    void updateIsActiveToFalseById(Long id);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT CASE WHEN COUNT(p) &gt; 0 THEN true ELSE false END FROM Funko p WHERE p.categoria.id = :id&quot;)
+&nbsp;    Boolean existsFunkoById(Long id);
+&nbsp;
+&nbsp;    @Query(&quot;SELECT p.id FROM Categoria p WHERE p.name = :name&quot;)
+&nbsp;    Optional&lt;Long&gt; getIdByName(String name);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-09 19:36</div>
+</div>
+</body>
+</html>
