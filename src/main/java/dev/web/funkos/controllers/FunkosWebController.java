@@ -79,7 +79,7 @@ public class FunkosWebController {
                         Model model,
                         @RequestParam(value = "search", required = false) Optional<String> search,
                         @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "10") int size,
+                        @RequestParam(defaultValue = "3") int size,
                         @RequestParam(defaultValue = "id") String sortBy,
                         @RequestParam(defaultValue = "asc") String direction,
                         Locale locale
@@ -93,7 +93,7 @@ public class FunkosWebController {
         log.info("Index GET con parámetros search: " + search + ", page: " + page + ", size: " + size);
         Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        var funkosPage = funkoService.findAll(search, Optional.empty(), Optional.empty(), pageable);
+        var funkosPage = funkoService.findAll(Optional.empty(), search, Optional.empty(), pageable);
 
         UserStore sessionData = (UserStore) session.getAttribute("userSession");
         sessionData.incrementLoginCount();

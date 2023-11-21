@@ -41,7 +41,7 @@ public class PedidoServiceImpl implements PedidoService {
     @Cacheable(key = "#idPedido")
     public Pedido findById(ObjectId idPedido) {
         log.info("Buscando pedido por id: {}", idPedido);
-        return pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFound(idPedido.toHexString()));
+        return pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFound(idPedido.toString()));
     }
 
     @Override
@@ -70,7 +70,7 @@ public class PedidoServiceImpl implements PedidoService {
     @CachePut(key = "#result.id")
     public Pedido update(ObjectId idPedido, Pedido pedido) {
         log.info("Actualizando pedido por id: {}", idPedido);
-        Pedido pedidoUpdate = pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFound(idPedido.toHexString()));
+        Pedido pedidoUpdate = pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFound(idPedido.toString()));
         returnStockPedidos(pedidoUpdate);
         checkPedido(pedido);
         var pedidoToSave = reserveStockPedidos(pedido);
@@ -83,7 +83,7 @@ public class PedidoServiceImpl implements PedidoService {
     @CacheEvict(key = "#idPedido")
     public void delete(ObjectId idPedido) {
         log.info("Borrando pedido por id: {}", idPedido);
-        var pedidoToDelete = pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFound(idPedido.toHexString()));
+        var pedidoToDelete = pedidoRepository.findById(idPedido).orElseThrow(() -> new PedidoNotFound(idPedido.toString()));
         returnStockPedidos(pedidoToDelete);
         pedidoRepository.deleteById(idPedido);
     }

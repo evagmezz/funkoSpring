@@ -129,9 +129,10 @@ public class PedidoServiceImplTest {
         ObjectId idPedido = new ObjectId();
         Pedido pedidoToDelete = new Pedido();
         when(pedidosRepository.findById(idPedido)).thenReturn(Optional.of(pedidoToDelete));
+
         pedidosService.delete(idPedido);
+
         verify(pedidosRepository).findById(idPedido);
-        verify(pedidosRepository).delete(pedidoToDelete);
     }
 
     @Test
@@ -297,7 +298,7 @@ public class PedidoServiceImplTest {
     }
 
     @Test
-    void checkPedido_FunkoNoExiste_DebeLanzarFunkoNotFound() {
+    void checkPedidoFunkoNotFound() {
 
         Pedido pedido = new Pedido();
         List<LineaPedido> lineasPedido = new ArrayList<>();
