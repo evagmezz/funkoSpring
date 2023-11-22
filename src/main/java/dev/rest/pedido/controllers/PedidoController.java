@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -60,6 +61,7 @@ public class PedidoController {
     }
 
     @GetMapping("/usuario/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageResponse<Pedido>> getPedidosByUsuario(
             @PathVariable("id") Long idUser,
             @RequestParam(defaultValue = "0") int page,
@@ -74,18 +76,21 @@ public class PedidoController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Pedido> createPedido(@Valid @RequestBody Pedido pedido) {
         log.info("Creando pedido: " + pedido);
         return ResponseEntity.status(HttpStatus.CREATED).body(pedidoService.save(pedido));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Pedido> updatePedido(@PathVariable("id") ObjectId id, @Valid @RequestBody Pedido pedido) {
         log.info("Actualizando pedido con id: " + id);
         return ResponseEntity.ok(pedidoService.update(id, pedido));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Pedido> deletePedido(@PathVariable("id") ObjectId idPedido) {
         log.info("Eliminando pedido con id: " + idPedido);
         pedidoService.delete(idPedido);

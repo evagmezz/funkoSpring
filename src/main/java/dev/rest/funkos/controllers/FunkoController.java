@@ -3,7 +3,6 @@ package dev.rest.funkos.controllers;
 import dev.rest.funkos.dto.FunkoCreateDto;
 import dev.rest.funkos.dto.FunkoResponseDto;
 import dev.rest.funkos.dto.FunkoUpdateDto;
-import dev.rest.funkos.models.Funko;
 import dev.rest.funkos.services.FunkoServiceImpl;
 import dev.rest.storage.services.StorageService;
 import dev.utils.pagination.PageResponse;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +71,7 @@ public class FunkoController {
 
     @NonNull
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FunkoResponseDto> createFunko(@Valid @RequestBody FunkoCreateDto funko) {
         log.info("Creando funko...");
         return ResponseEntity.status(HttpStatus.CREATED).body(funkoService.save(funko));
@@ -78,6 +79,7 @@ public class FunkoController {
 
     @NonNull
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FunkoResponseDto> updateFunko(@PathVariable Long id, @Valid @RequestBody FunkoUpdateDto funko) {
         log.info("Actualizando funko con ID: " + id);
         return ResponseEntity.ok(funkoService.update(funko, id));
@@ -85,6 +87,7 @@ public class FunkoController {
 
     @NonNull
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FunkoResponseDto> funkoPatch(@PathVariable Long id, @Valid @RequestBody FunkoUpdateDto funko) {
         log.info("Actualizando funko con ID: " + id);
         return ResponseEntity.ok(funkoService.update(funko, id));
@@ -92,6 +95,7 @@ public class FunkoController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteFunko(@PathVariable Long id) {
         funkoService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -111,6 +115,7 @@ public class FunkoController {
     }
 
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FunkoResponseDto> uploadImage(@PathVariable Long id, @RequestPart("file") MultipartFile
             file) {
         log.info("Actualizando imagen de funko con id: " + id);

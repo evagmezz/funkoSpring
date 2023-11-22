@@ -41,6 +41,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb:3.0.7")
     // Thyemeleaf
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.0.4")
+    // Security
+    implementation("org.springframework.boot:spring-boot-starter-security:3.0.4")
+    // Dependencia para test
+    testImplementation("org.springframework.security:spring-security-test:6.0.2")
+    //auth0
+    implementation("com.auth0:java-jwt:4.4.0")
 
 
 }

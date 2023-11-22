@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -62,16 +63,19 @@ public class CategoriaController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Categoria> create(@Valid @RequestBody CategoriaDto categoria) {
         return ResponseEntity.status(HttpStatus.CREATED).body(categoriaService.save(categoria));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Categoria> update(@PathVariable Long id, @Valid @RequestBody CategoriaDto categoria) {
         return ResponseEntity.ok(categoriaService.update(id, categoria));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoriaService.deleteById(id);
         return ResponseEntity.noContent().build();

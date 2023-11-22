@@ -56,7 +56,7 @@ public class FunkosWebController {
     @PostMapping
     public String login(@RequestParam("password") String password, HttpSession session, Model model) {
         log.info("Login POST");
-        if ("pass".equals(password)) {
+        if ("eva25".equals(password)) {
             userSession.setLastLogin(new Date());
             userSession.setLogged(true);
             session.setAttribute("userSession", userSession);
