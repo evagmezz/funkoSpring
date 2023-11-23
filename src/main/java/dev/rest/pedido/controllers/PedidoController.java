@@ -38,6 +38,7 @@ public class PedidoController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PageResponse<Pedido>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -55,6 +56,7 @@ public class PedidoController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Pedido> getPedido(@PathVariable("id") ObjectId idPedido) {
         log.info("Obteniendo pedido con id: " + idPedido);
         return ResponseEntity.ok(pedidoService.findById(idPedido));

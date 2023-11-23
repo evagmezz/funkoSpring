@@ -4,6 +4,11 @@ package dev.users.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dev.rest.pedido.models.Cliente;
+import dev.rest.pedido.models.Direccion;
+import dev.rest.pedido.models.LineaPedido;
+import dev.rest.pedido.models.Pedido;
+import dev.rest.pedido.services.PedidoService;
 import dev.rest.users.dto.UserInfoResponse;
 import dev.rest.users.dto.UserRequest;
 import dev.rest.users.dto.UserResponse;
@@ -11,6 +16,7 @@ import dev.rest.users.exceptions.UserNotFound;
 import dev.rest.users.models.User;
 import dev.rest.users.services.UsersService;
 import dev.utils.pagination.PageResponse;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -71,6 +77,21 @@ public class UserControllerTest {
             .email("user@gmail.com")
             .build();
 
+    private final Pedido pedido1 = Pedido.builder()
+            .id(new ObjectId())
+            .idUsuario(1L)
+            .cliente(
+                    new Cliente("EvaGomez", "evagomez@soydev.dev", "1234567890",
+                            new Direccion("Calle", "1", "Ciudad", "Provincia", "Pais", "12345")
+                    )
+            )
+            .lineasPedido(List.of(LineaPedido.builder()
+                    .idFunko(1L)
+                    .cantidad(2)
+                    .precioFunko(10.0)
+                    .build()))
+            .build();
+
     private final String myEndpoint = "/api/users";
     private final ObjectMapper mapper = new ObjectMapper();
     @Autowired
@@ -78,6 +99,9 @@ public class UserControllerTest {
 
     @MockBean
     private UsersService usersService;
+
+    @MockBean
+    private PedidoService pedidoService;
 
 
     @Autowired
@@ -316,17 +340,134 @@ public class UserControllerTest {
     @WithUserDetails("admin")
     void me() throws Exception {
         var myLocalEndpoint = myEndpoint + "/me/porfile";
-
         when(usersService.findById(anyLong(), any(Pageable.class))).thenReturn(userInfoResponse);
-
         MockHttpServletResponse response = mockMvc.perform(
                         get(myLocalEndpoint)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
-
         assertEquals(200, response.getStatus());
     }
+
+    @Test
+    @WithUserDetails("user")
+    void updateMe() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/porfile";
+        when(usersService.update(anyLong(), any(UserRequest.class))).thenReturn(userResponse);
+        MockHttpServletResponse response = mockMvc.perform(
+                        put(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(userRequest)))
+                .andReturn().getResponse();
+        var res = mapper.readValue(response.getContentAsString(), UserResponse.class);
+        assertAll(
+                () -> assertEquals(200, response.getStatus()),
+                () -> assertEquals(userResponse, res)
+        );
+        verify(usersService, times(1)).update(anyLong(), any(UserRequest.class));
+    }
+
+    @Test
+    @WithUserDetails("user")
+    void deleteMe() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/porfile";
+        doNothing().when(usersService).deleteById(anyLong());
+        MockHttpServletResponse response = mockMvc.perform(
+                        delete(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertAll(
+                () -> assertEquals(204, response.getStatus())
+        );
+        verify(usersService, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    @WithUserDetails("user")
+    void getMyPedidos() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/pedidos";
+        when(pedidoService.findByIdUsuario(anyLong(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
+        MockHttpServletResponse response = mockMvc.perform(
+                        get(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertAll(
+                () -> assertEquals(200, response.getStatus())
+        );
+        verify(pedidoService, times(1)).findByIdUsuario(anyLong(), any(Pageable.class));
+    }
+
+    @Test
+    @WithUserDetails("user")
+    void getMyPedidosById() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/pedidos/" + pedido1.get_id();
+        when(pedidoService.findById(any(ObjectId.class))).thenReturn(pedido1);
+        MockHttpServletResponse response = mockMvc.perform(
+                        get(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertAll(
+                () -> assertEquals(200, response.getStatus())
+        );
+        verify(pedidoService, times(1)).findById(any(ObjectId.class));
+    }
+
+    @Test
+    @WithUserDetails("user")
+    void saveMyPedido() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/pedidos";
+        when(pedidoService.save(any(Pedido.class))).thenReturn(pedido1);
+        MockHttpServletResponse response = mockMvc.perform(
+                        post(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(pedido1)))
+                .andReturn().getResponse();
+        assertAll(
+                () -> assertEquals(201, response.getStatus())
+        );
+        verify(pedidoService, times(1)).save(any(Pedido.class));
+
+    }
+
+    @Test
+    @WithUserDetails("user")
+    void updateMyPedido() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/pedidos/" + pedido1.get_id();
+        when(pedidoService.update(any(ObjectId.class), any(Pedido.class))).thenReturn(pedido1);
+        MockHttpServletResponse response = mockMvc.perform(
+                        put(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(pedido1)))
+                .andReturn().getResponse();
+        assertAll(
+                () -> assertEquals(200, response.getStatus())
+        );
+        verify(pedidoService, times(1)).update(any(ObjectId.class), any(Pedido.class));
+    }
+
+    @Test
+    @WithUserDetails("user")
+    void deleteMyPedido() throws Exception {
+        var myLocalEndpoint = myEndpoint + "/me/pedidos/" + pedido1.get_id();
+        doNothing().when(pedidoService).delete(any(ObjectId.class));
+        MockHttpServletResponse response = mockMvc.perform(
+                        delete(myLocalEndpoint)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        assertAll(
+                () -> assertEquals(204, response.getStatus())
+        );
+        verify(pedidoService, times(1)).delete(any(ObjectId.class));
+
+    }
+
 
     @Test
     @WithAnonymousUser

@@ -47,8 +47,8 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test:6.0.2")
     //auth0
     implementation("com.auth0:java-jwt:4.4.0")
-
-
+    //Swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 }
 
 tasks.withType<Test> {

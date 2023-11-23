@@ -34,7 +34,6 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @RequestMapping("/api/users")
-@PreAuthorize("hasRole('USER')")
 public class UsersController {
     private final UsersService usersService;
     private final PedidoService pedidoService;
@@ -99,7 +98,7 @@ public class UsersController {
     }
 
     @GetMapping("/me/porfile")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserInfoResponse> actualUser(@AuthenticationPrincipal User user) {
         log.info("Obteniendo usuario...");
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());

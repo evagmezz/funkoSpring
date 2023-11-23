@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request.requestMatchers("/templates/**").permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/css/**").permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/imagenes/**").permitAll())
-                .authorizeHttpRequests(request -> request.requestMatchers("/funkos/**").permitAll())
+                .authorizeHttpRequests(request -> request.requestMatchers("/api/**").permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/web/**").permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/ws/**").permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/storage/**").permitAll())
