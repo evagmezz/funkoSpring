@@ -98,7 +98,7 @@ public class UsersController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/me/profile")
+    @GetMapping("/me/porfile")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserInfoResponse> actualUser(@AuthenticationPrincipal User user) {
         log.info("Obteniendo usuario...");
@@ -106,14 +106,14 @@ public class UsersController {
         return ResponseEntity.ok(usersService.findById(user.getId(), pageable));
     }
 
-    @PutMapping("/me/profile")
+    @PutMapping("/me/porfile")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponse> updateActualUser(@AuthenticationPrincipal User user, @Valid @RequestBody UserRequest userRequest) {
         log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
         return ResponseEntity.ok(usersService.update(user.getId(), userRequest));
     }
 
-    @DeleteMapping("/me/profile")
+    @DeleteMapping("/me/porfile")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteActualUser(@AuthenticationPrincipal User user) {
         log.info("deleteMe: user: {}", user);

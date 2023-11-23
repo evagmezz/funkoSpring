@@ -15,7 +15,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
         registry.addHandler(webSocketFunkosHandler(), "/ws/funkos");
     }
 
-    //ws://localhost:8080/ws/funkos
+
 
     @Bean
     public WebSocketHandler webSocketFunkosHandler() {

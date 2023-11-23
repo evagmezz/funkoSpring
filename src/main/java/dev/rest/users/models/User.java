@@ -31,18 +31,18 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "El nombre no puede estar vacío")
+    @NotBlank(message = "El nombre no puede estar vacio")
     @Column(nullable = false)
     private String nombre;
     @Column(nullable = false)
-    @NotBlank(message = "Los apellidos no puede estar vacío")
+    @NotBlank(message = "Los apellidos no puede estar vacio")
     private String apellidos;
     @Column(unique = true, nullable = false)
-    @NotBlank(message = "El nombre de usuario no puede estar vacío")
+    @NotBlank(message = "El nombre de usuario no puede estar vacio")
     private String username;
     @Column(unique = true, nullable = false)
-    @Email(regexp = ".*@.*\\..*", message = "El email debe ser válido")
-    @NotBlank(message = "El email no puede estar vacío")
+    @Email(regexp = ".*@.*\\..*", message = "El email debe ser valido")
+    @NotBlank(message = "El email no puede estar vacio")
     private String email;
     @NotBlank(message = "La password no puede estar vacía")
     @Length(min = 5, message = "La password debe tener al menos 5 caracteres")
