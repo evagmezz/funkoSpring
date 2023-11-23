@@ -81,12 +81,12 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @CachePut(key = "#result.id")
     public UserResponse update(Long id, UserRequest userRequest) {
-        log.info("Actualizando usuario: " + userRequest);
+        log.info("Actualizando usuario...");
         usersRepository.findById(id).orElseThrow(() -> new UserNotFound(id));
         usersRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(userRequest.getUsername(), userRequest.getEmail())
                 .ifPresent(u -> {
                     if (!u.getId().equals(id)) {
-                        System.out.println("usuario encontrado: " + u.getId() + " con ID: " + id);
+                        System.out.println("usuario encontrado: " + u.getId() + " Mi id: " + id);
                         throw new UsernameOrEmailExist("Ya existe un usuario con ese username o email");
                     }
                 });

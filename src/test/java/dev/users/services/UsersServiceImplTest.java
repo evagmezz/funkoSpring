@@ -40,6 +40,7 @@ public class UsersServiceImplTest {
             .build();
 
     private final User user = User.builder()
+            .id(5L)
             .nombre("User")
             .apellidos("User")
             .password("user1234")
@@ -169,14 +170,14 @@ public class UsersServiceImplTest {
         verify(usersRepository, times(1)).save(user);
     }
 
-/*    @Test
-     void updateUserExist() {
+    @Test
+     void updateUserExists() {
         Long userId = 1L;
         when(usersRepository.findById(userId)).thenReturn(Optional.of(user));
         when(usersRepository.findByUsernameEqualsIgnoreCaseOrEmailEqualsIgnoreCase(anyString(), anyString())).thenReturn(Optional.of(user));
+
         assertThrows(UsernameOrEmailExist.class, () -> usersService.update(userId, userRequest));
-        verify(usersRepository, times(1)).findById(userId);
-    }*/
+    }
 
     @Test
      void updateUserNotFound() {
