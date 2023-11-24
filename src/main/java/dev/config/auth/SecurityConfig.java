@@ -48,6 +48,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request.requestMatchers("/ws/**").permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/storage/**").permitAll())
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/**").permitAll())
+                .authorizeHttpRequests(request -> request.requestMatchers("/swagger-ui/**").permitAll())
+                .authorizeHttpRequests(request -> request.requestMatchers("/v3/api-docs/**").permitAll())
 
                 .authorizeHttpRequests(request -> request.anyRequest().authenticated())
 

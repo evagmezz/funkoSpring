@@ -337,7 +337,7 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithUserDetails("admin")
+    @WithUserDetails("user")
     void me() throws Exception {
         var myLocalEndpoint = myEndpoint + "/me/porfile";
         when(usersService.findById(anyLong(), any(Pageable.class))).thenReturn(userInfoResponse);
@@ -472,14 +472,16 @@ public class UserControllerTest {
     @Test
     @WithAnonymousUser
     void meAnonymousUser() throws Exception {
-        var myLocalEndpoint = myEndpoint + "/me/profile";
+        var myLocalEndpoint = myEndpoint + "/me/porfile";
         MockHttpServletResponse response = mockMvc.perform(
                         get(myLocalEndpoint)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
-        assertEquals(403, response.getStatus());
+        assertAll(
+                () -> assertEquals(403, response.getStatus())
+        );
     }
 }
 

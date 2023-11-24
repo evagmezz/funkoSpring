@@ -7,6 +7,9 @@ import dev.rest.funkos.services.FunkoServiceImpl;
 import dev.rest.storage.services.StorageService;
 import dev.utils.pagination.PageResponse;
 import dev.utils.pagination.PaginationLinksUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.NonNull;
@@ -45,6 +48,12 @@ public class FunkoController {
         this.paginationLinksUtils = paginationLinksUtils;
     }
 
+    @Operation(summary = "Obtener todos los funkos paginados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funkos encontrados correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos")
+    })
+
     @GetMapping()
     public ResponseEntity<PageResponse<FunkoResponseDto>> getFunkos(@RequestParam(required = false) Optional<String> categoria,
                                                                     @RequestParam(required = false) Optional<String> nombre,
@@ -63,12 +72,23 @@ public class FunkoController {
                 .body(PageResponse.of(result, sortBy, direction));
     }
 
+    @Operation(summary = "Obtener un funko por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funko encontrado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
+            @ApiResponse(responseCode = "404", description = "Funko no encontrado"),
+    })
     @GetMapping("/{id}")
     public FunkoResponseDto getFunkoById(@PathVariable Long id) {
         log.info("Buscando funko con ID: " + id);
         return funkoService.findById(id);
     }
 
+    @Operation(summary = "Crear un nuevo funko")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Funko creado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
+    })
     @NonNull
     @PostMapping()
     @PreAuthorize("hasRole('ADMIN')")
@@ -77,6 +97,11 @@ public class FunkoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(funkoService.save(funko));
     }
 
+    @Operation(summary = "Actualizar un funko por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funko actualizado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
+    })
     @NonNull
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -85,6 +110,11 @@ public class FunkoController {
         return ResponseEntity.ok(funkoService.update(funko, id));
     }
 
+    @Operation(summary = "Actualizar un funko por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Funko actualizado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
+    })
     @NonNull
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -93,7 +123,11 @@ public class FunkoController {
         return ResponseEntity.ok(funkoService.update(funko, id));
     }
 
-
+    @Operation(summary = "Eliminar un funko por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Funko eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Funko no encontrado")
+    })
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteFunko(@PathVariable Long id) {
@@ -114,6 +148,11 @@ public class FunkoController {
         return errors;
     }
 
+    @Operation(summary = "Actualizar la imagen de un funko por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Imagen actualizada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
+    })
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FunkoResponseDto> uploadImage(@PathVariable Long id, @RequestPart("file") MultipartFile

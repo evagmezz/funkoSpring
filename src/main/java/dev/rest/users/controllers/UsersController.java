@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +33,7 @@ import java.util.Optional;
 @RestController
 @Slf4j
 @RequestMapping("/api/users")
+@PreAuthorize("hasRole('USER')")
 public class UsersController {
     private final UsersService usersService;
     private final PedidoService pedidoService;
@@ -98,7 +98,6 @@ public class UsersController {
     }
 
     @GetMapping("/me/porfile")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserInfoResponse> actualUser(@AuthenticationPrincipal User user) {
         log.info("Obteniendo usuario...");
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
@@ -106,14 +105,12 @@ public class UsersController {
     }
 
     @PutMapping("/me/porfile")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponse> updateActualUser(@AuthenticationPrincipal User user, @Valid @RequestBody UserRequest userRequest) {
         log.info("updateMe: user: {}, userRequest: {}", user, userRequest);
         return ResponseEntity.ok(usersService.update(user.getId(), userRequest));
     }
 
     @DeleteMapping("/me/porfile")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deleteActualUser(@AuthenticationPrincipal User user) {
         log.info("deleteMe: user: {}", user);
         usersService.deleteById(user.getId());
@@ -121,7 +118,6 @@ public class UsersController {
     }
 
     @GetMapping("/me/pedidos")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PageResponse<Pedido>> getPedidosByUsuario(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "0") int page,
@@ -136,7 +132,6 @@ public class UsersController {
     }
 
     @GetMapping("/me/pedidos/{id}")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Pedido> getPedidoById(
             @AuthenticationPrincipal User user,
             @PathVariable("id") ObjectId idPedido
@@ -146,7 +141,6 @@ public class UsersController {
     }
 
     @PostMapping("/me/pedidos")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Pedido> savePedido(
             @AuthenticationPrincipal User user,
             @Valid @RequestBody Pedido pedido
@@ -157,7 +151,6 @@ public class UsersController {
     }
 
     @PutMapping("/me/pedidos/{id}")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Pedido> updatePedido(
             @AuthenticationPrincipal User user,
             @PathVariable("id") ObjectId idPedido,
@@ -168,7 +161,6 @@ public class UsersController {
     }
 
     @DeleteMapping("/me/pedidos/{id}")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Void> deletePedidoById(
             @AuthenticationPrincipal User user,
             @PathVariable("id") ObjectId idPedido

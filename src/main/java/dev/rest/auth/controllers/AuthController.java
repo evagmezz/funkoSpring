@@ -4,6 +4,8 @@ import dev.rest.auth.dto.JwtAuthResponse;
 import dev.rest.auth.dto.UserSignInRequest;
 import dev.rest.auth.dto.UserSignUpRequest;
 import dev.rest.auth.services.authentication.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,7 @@ public class AuthController {
         return ResponseEntity.ok(authService.signUp(request));
     }
 
+    @Operation(summary = "Iniciar sesión")
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthResponse> signIn(@Valid @RequestBody UserSignInRequest request) {
         log.info("Iniciando sesión de usuario: {}", request);

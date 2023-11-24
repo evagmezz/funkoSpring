@@ -20,6 +20,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -53,6 +54,24 @@ class CategoriaControllerTest {
     public CategoriaControllerTest(CategoriaService categoriaService) {
         this.categoriaService = categoriaService;
         mapper.registerModule(new JavaTimeModule());
+    }
+
+    @Test
+    @WithAnonymousUser
+    void getAllUnauthorized() throws Exception {
+        String localEndPoint = "/api/categorias";
+        var list = List.of(categoria, categoria2);
+        Page<Categoria> page = new PageImpl<>(list);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("id").ascending());
+        MockHttpServletResponse response = mockMvc.perform(
+                        MockMvcRequestBuilders.get(localEndPoint)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        assertAll(
+                () -> assertEquals(403, response.getStatus())
+        );
+
     }
 
     @Test
