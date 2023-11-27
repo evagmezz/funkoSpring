@@ -7,6 +7,8 @@ import dev.rest.categoria.services.CategoriaService;
 import dev.utils.pagination.PageResponse;
 import dev.utils.pagination.PaginationLinksUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,6 +49,14 @@ public class CategoriaController {
             @ApiResponse(responseCode = "200", description = "Categorías encontradas correctamente"),
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos")
     })
+    @Parameters({
+            @Parameter(name = "name", description = "Nombre de la categoría"),
+            @Parameter(name = "isDeleted", description = "Indica si la categoría está eliminada"),
+            @Parameter(name = "page", description = "Número de página"),
+            @Parameter(name = "size", description = "Tamaño de la página"),
+            @Parameter(name = "sortBy", description = "Campo por el que se ordenará"),
+            @Parameter(name = "direction", description = "Dirección de la ordenación")
+    })
     @GetMapping
     public ResponseEntity<PageResponse<Categoria>> getAll(@RequestParam(required = false) Optional<String> name,
                                                           @RequestParam(required = false) Optional<Boolean> isDeleted,
@@ -72,6 +82,9 @@ public class CategoriaController {
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
             @ApiResponse(responseCode = "404", description = "Categoría no encontrada"),
     })
+    @Parameters({
+            @Parameter(name = "id", description = "ID de la categoría")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Categoria> getById(@PathVariable Long id) {
         return ResponseEntity.ok(categoriaService.findById(id));
@@ -81,6 +94,9 @@ public class CategoriaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Categoría creada correctamente"),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
+    })
+    @Parameters({
+            @Parameter(name = "categoria", description = "Categoría a crear")
     })
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -94,6 +110,10 @@ public class CategoriaController {
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
             @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
     })
+    @Parameters({
+            @Parameter(name = "id", description = "ID de la categoría"),
+            @Parameter(name = "categoria", description = "Categoría a actualizar")
+    })
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Categoria> update(@PathVariable Long id, @Valid @RequestBody CategoriaDto categoria) {
@@ -104,6 +124,9 @@ public class CategoriaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Categoría eliminada correctamente"),
             @ApiResponse(responseCode = "404", description = "Categoría no encontrada")
+    })
+    @Parameters({
+            @Parameter(name = "id", description = "ID de la categoría")
     })
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")

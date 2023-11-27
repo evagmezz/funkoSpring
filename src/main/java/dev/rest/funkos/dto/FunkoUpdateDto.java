@@ -17,7 +17,7 @@ public record FunkoUpdateDto(
         Integer cantidad,
         @Schema(description = "Ruta de la imagen del funko", example = "imagen.jpg")
         String rutaImagen,
-        @Schema(description = "Categoria del funko", example = "DC")
+        @Schema(description = "Categoria del funko", example = "PELICULA")
         String categoria
 ) {
 

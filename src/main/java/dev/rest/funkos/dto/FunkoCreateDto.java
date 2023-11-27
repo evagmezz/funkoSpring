@@ -19,7 +19,7 @@ public record FunkoCreateDto(
         @Schema(description = "Ruta de la imagen del funko", example = "imagen.jpg")
         String rutaImagen,
         @NotEmpty(message = "La categoria no puede estar vacia")
-        @Schema(description = "Categoria del funko", example = "DC")
+        @Schema(description = "Categoria del funko", example = "PELICULA")
         String categoria
 ) {
 }

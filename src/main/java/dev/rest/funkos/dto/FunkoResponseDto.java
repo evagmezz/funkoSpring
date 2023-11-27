@@ -21,7 +21,7 @@ public record FunkoResponseDto(
         LocalDate fechaCreacion,
         @Schema(description = "Fecha de actualización del funko", example = "2021-01-01")
         LocalDate fechaActualizacion,
-        @Schema(description = "Categoría del funko", example = "DC")
+        @Schema(description = "Categoría del funko", example = "PELICULA")
         Categoria categoria
 ) {
 }

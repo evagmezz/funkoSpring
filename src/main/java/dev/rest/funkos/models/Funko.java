@@ -62,7 +62,7 @@ public class Funko {
     @ManyToOne()
     @JoinColumn(name = "categoria_id")
     @NotNull
-    @Schema(description = "Categoría del funko", example = "DC")
+    @Schema(description = "Categoría del funko", example = "PELICULA")
     private Categoria categoria;
 
 }

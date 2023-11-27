@@ -8,6 +8,8 @@ import dev.rest.storage.services.StorageService;
 import dev.utils.pagination.PageResponse;
 import dev.utils.pagination.PaginationLinksUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,6 +55,16 @@ public class FunkoController {
             @ApiResponse(responseCode = "200", description = "Funkos encontrados correctamente"),
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos")
     })
+    @Parameters({
+            @Parameter(name = "categoria", description = "Categoría del funko", example = "Marvel"),
+            @Parameter(name = "nombre", description = "Nombre del funko", example = "Funko1"),
+            @Parameter(name = "maxPrecio", description = "Precio máximo del funko", example = "100.0"),
+            @Parameter(name = "page", description = "Número de página", example = "0"),
+            @Parameter(name = "size", description = "Tamaño de la página", example = "10"),
+            @Parameter(name = "sortBy", description = "Campo por el que se ordena", example = "id"),
+            @Parameter(name = "direction", description = "Dirección de la ordenación", example = "asc")
+    }
+    )
 
     @GetMapping()
     public ResponseEntity<PageResponse<FunkoResponseDto>> getFunkos(@RequestParam(required = false) Optional<String> categoria,
@@ -78,6 +90,9 @@ public class FunkoController {
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
             @ApiResponse(responseCode = "404", description = "Funko no encontrado"),
     })
+    @Parameters({
+            @Parameter(name = "id", description = "ID del funko", example = "1")
+    })
     @GetMapping("/{id}")
     public FunkoResponseDto getFunkoById(@PathVariable Long id) {
         log.info("Buscando funko con ID: " + id);
@@ -88,6 +103,9 @@ public class FunkoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Funko creado correctamente"),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta")
+    })
+    @Parameters({
+            @Parameter(name = "funko", description = "Funko a crear", example = "{'nombre': 'Funko1', 'categoria': 'Marvel', 'precio': 100.0, 'cantidad': 10}")
     })
     @NonNull
     @PostMapping()
@@ -102,6 +120,10 @@ public class FunkoController {
             @ApiResponse(responseCode = "200", description = "Funko actualizado correctamente"),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
     })
+    @Parameters({
+            @Parameter(name = "id", description = "ID del funko", example = "1"),
+            @Parameter(name = "funko", description = "Funko a actualizar", example = "{'nombre': 'Funko1', 'categoria': 'Marvel', 'precio': 100.0, 'cantidad': 10}")
+    })
     @NonNull
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -115,6 +137,10 @@ public class FunkoController {
             @ApiResponse(responseCode = "200", description = "Funko actualizado correctamente"),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
     })
+    @Parameters({
+            @Parameter(name = "id", description = "ID del funko", example = "1"),
+            @Parameter(name = "funko", description = "Funko a actualizar", example = "{'nombre': 'Funko1', 'categoria': 'Marvel', 'precio': 100.0, 'cantidad': 10}")
+    })
     @NonNull
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -127,6 +153,9 @@ public class FunkoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Funko eliminado correctamente"),
             @ApiResponse(responseCode = "404", description = "Funko no encontrado")
+    })
+    @Parameters({
+            @Parameter(name = "id", description = "ID del funko", example = "1")
     })
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -152,6 +181,10 @@ public class FunkoController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Imagen actualizada correctamente"),
             @ApiResponse(responseCode = "400", description = "Solicitud incorrecta"),
+    })
+    @Parameters({
+            @Parameter(name = "id", description = "ID del funko", example = "1"),
+            @Parameter(name = "file", description = "Imagen del funko", example = "funko.jpg")
     })
     @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
