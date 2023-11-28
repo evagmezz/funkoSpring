@@ -5,6 +5,9 @@ import dev.rest.pedido.services.PedidoService;
 import dev.rest.users.dto.UserInfoResponse;
 import dev.rest.users.dto.UserRequest;
 import dev.rest.users.dto.UserResponse;
+import dev.rest.users.exceptions.UserException;
+import dev.rest.users.exceptions.UserNoAuthorized;
+import dev.rest.users.exceptions.UserNotFound;
 import dev.rest.users.models.User;
 import dev.rest.users.services.UsersService;
 import dev.utils.pagination.PageResponse;
@@ -166,6 +169,11 @@ public class UsersController {
             @PathVariable("id") ObjectId idPedido
     ) {
         log.info("Borrando pedido con ID: " + idPedido);
+        Pedido pedido = pedidoService.findById(idPedido);
+        if (!pedido.getIdUsuario().equals(user.getId())) {
+            throw new UserNoAuthorized("El usuario no es el propietario del pedido") {
+            };
+        }
         pedidoService.delete(idPedido);
         return ResponseEntity.noContent().build();
     }

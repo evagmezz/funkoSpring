@@ -69,7 +69,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Usuario no autorizado");
                 return;
             }
-            authUsersService.loadUserByUsername(userName);
             log.info("Usuario encontrado: {}", userDetails);
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 log.info("JWT válido");

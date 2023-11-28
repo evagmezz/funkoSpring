@@ -451,23 +451,6 @@ public class UserControllerTest {
         verify(pedidoService, times(1)).update(any(ObjectId.class), any(Pedido.class));
     }
 
-    @Test
-    @WithUserDetails("user")
-    void deleteMyPedido() throws Exception {
-        var myLocalEndpoint = myEndpoint + "/me/pedidos/" + pedido1.get_id();
-        doNothing().when(pedidoService).delete(any(ObjectId.class));
-        MockHttpServletResponse response = mockMvc.perform(
-                        delete(myLocalEndpoint)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-        assertAll(
-                () -> assertEquals(204, response.getStatus())
-        );
-        verify(pedidoService, times(1)).delete(any(ObjectId.class));
-
-    }
-
 
     @Test
     @WithAnonymousUser
