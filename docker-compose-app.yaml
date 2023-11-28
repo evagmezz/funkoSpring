@@ -1,0 +1,26 @@
+services:
+
+  funkos-api-rest:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: funkos-api-rest
+    restart: always
+    env_file: .env
+    ports:
+      - ${API_PORT}:3000
+    volumes:
+      - storage-dir:/storage-dir
+    networks:
+      - funkos-network
+    depends_on:
+      - h2-db
+      - mongo-db
+
+
+  volumes:
+    storage-dir:
+
+  networks:
+    funkos-network:
+      driver: bridge
