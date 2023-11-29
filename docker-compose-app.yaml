@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: funkos-tienda-api
-    restart: always
+    restart: unless-stopped
     env_file: .env
     ports:
       - ${API_PORT}:3000

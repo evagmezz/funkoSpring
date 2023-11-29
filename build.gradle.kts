@@ -49,6 +49,8 @@ dependencies {
     implementation("com.auth0:java-jwt:4.4.0")
     //Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+    //PostgresSQL
+    implementation("org.postgresql:postgresql:42.5.4")
 }
 
 tasks.withType<Test> {
