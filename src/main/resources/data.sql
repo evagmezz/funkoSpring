@@ -34,3 +34,4 @@ values ('Eva', 'Gomez Uceda', 'user', 'user@gmail.net',
 
 insert into USER_ROLES (user_id, roles)
 values (2, 'USER');
+
