@@ -1,20 +1,22 @@
-FROM gradle:jdk17-alpine AS build
+FROM eclipse-temurin:17-jdk-alpine AS build
 
 WORKDIR /app
 
-COPY build.gradle.kts .
 COPY gradlew .
 COPY gradle gradle
+COPY build.gradle settings.gradle ./
 COPY src src
 
-RUN ./gradlew build
+RUN chmod +x gradlew
+
+RUN ./gradlew bootJar --no-daemon
 
 FROM eclipse-temurin:17-jre-alpine AS run
 
 WORKDIR /app
 
-COPY --from=build /app/build/libs/*SNAPSHOT.jar /app/my-app.jar
+COPY --from=build /app/build/libs/*.jar app.jar
 
-EXPOSE 3000
+EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","/app/my-app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
